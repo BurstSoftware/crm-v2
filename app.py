@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import pandas as pd
 
@@ -16,12 +15,12 @@ def main():
             # Read the CSV file
             df = pd.read_csv(uploaded_file)
 
-            # Expected columns
+            # Updated expected columns
             expected_columns = [
                 'invoiced', 'quoted', 'status', 'products', 'product_line',
-                'contacted', 'marketed', 'emailed', 'contact_name',
-                'business_name', 'phone_number', 'email_address',
-                'business_address', 'social_media_links'
+                'contacted', 'contact_name', 'business_name', 'phone_number',
+                'email_address', 'business_address', 'city', 'state',
+                'zip_code', 'social_media_links'
             ]
 
             # Validate columns
