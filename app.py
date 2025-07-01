@@ -36,8 +36,9 @@ def main():
                     if not invalid_rows.empty:
                         st.warning("Some 'invoiced' or 'quoted' values could not be converted to numbers and were set to NaN.")
                         st.subheader("Rows with Invalid Data")
-                        st.dataframe(invalid_rows[['business_name', 'invoiced', 'quoted']])
-                        st.write("Please correct these values in your CSV (ensure 'invoiced' and 'quoted' are numeric) and re-upload, or use the cleaned data below.")
+                        # Display relevant columns for debugging
+                        st.dataframe(invalid_rows[['business_name', 'invoiced', 'quoted', 'status', 'products']])
+                        st.write("The above rows have non-numeric values in 'invoiced' or 'quoted'. Please correct these to numeric values (e.g., 5000.00 or 0) in your CSV and re-upload.")
 
                         # Create a cleaned DataFrame by dropping NaN rows
                         cleaned_df = df.dropna(subset=['invoiced', 'quoted'])
@@ -50,18 +51,19 @@ def main():
                                 file_name="cleaned_clients.csv",
                                 mime="text/csv"
                             )
+                            st.session_state['client_data'] = cleaned_df
+                            st.success("Valid rows stored. Navigate to other pages to visualize the data.")
                         else:
-                            st.error("No valid rows remain after removing NaN values. Please fix the CSV.")
+                            st.error("No valid rows remain after removing NaN values. Storing original data to allow inspection.")
+                            st.write("You can still navigate to other pages to view non-numeric fields like 'status' and 'products'. Please fix the CSV for full functionality.")
+                            st.session_state['client_data'] = df  # Store original DataFrame
                     else:
                         st.success("All 'invoiced' and 'quoted' values are valid numbers.")
+                        st.session_state['client_data'] = df
 
-                    # Store the DataFrame in session state (use original or cleaned)
-                    st.session_state['client_data'] = df if invalid_rows.empty else cleaned_df
-                    st.success("File uploaded successfully! Navigate to other pages to visualize the data.")
-                    
                     # Display the first few rows
                     st.subheader("Preview of Uploaded Data")
-                    st.dataframe(df.head())
+                    st.dataframe(df[['business_name', 'invoiced', 'quoted', 'status', 'products']].head())
                 except Exception as e:
                     st.error(f"Error converting numeric columns: {e}")
                     return
