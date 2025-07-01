@@ -1,4 +1,3 @@
-# pages/2_client_details.py
 import streamlit as st
 import pandas as pd
 
@@ -40,6 +39,9 @@ def main():
             st.write(f"**Phone Number**: {client_data['phone_number']}")
             st.write(f"**Email Address**: {client_data['email_address']}")
             st.write(f"**Business Address**: {client_data['business_address']}")
+            st.write(f"**City**: {client_data['city']}")
+            st.write(f"**State**: {client_data['state']}")
+            st.write(f"**Zip Code**: {client_data['zip_code']}")
             st.write(f"**Social Media Links**: {client_data['social_media_links']}")
 
         with col2:
@@ -52,8 +54,6 @@ def main():
             st.write(f"**Products**: {client_data['products']}")
             st.write(f"**Product Line**: {client_data['product_line']}")
             st.write(f"**Contacted**: {'Yes' if client_data['contacted'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
-            st.write(f"**Marketed**: {'Yes' if client_data['marketed'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
-            st.write(f"**Emailed**: {'Yes' if client_data['emailed'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
 
 if __name__ == "__main__":
     main()
