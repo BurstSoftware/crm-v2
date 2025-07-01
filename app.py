@@ -30,20 +30,41 @@ def main():
                 try:
                     df['invoiced'] = pd.to_numeric(df['invoiced'], errors='coerce')
                     df['quoted'] = pd.to_numeric(df['quoted'], errors='coerce')
-                    # Check for NaN values after conversion
-                    if df['invoiced'].isna().any() or df['quoted'].isna().any():
+
+                    # Identify rows with NaN in invoiced or quoted
+                    invalid_rows = df[df['invoiced'].isna() | df['quoted'].isna()]
+                    if not invalid_rows.empty:
                         st.warning("Some 'invoiced' or 'quoted' values could not be converted to numbers and were set to NaN.")
+                        st.subheader("Rows with Invalid Data")
+                        st.dataframe(invalid_rows[['business_name', 'invoiced', 'quoted']])
+                        st.write("Please correct these values in your CSV (ensure 'invoiced' and 'quoted' are numeric) and re-upload, or use the cleaned data below.")
+
+                        # Create a cleaned DataFrame by dropping NaN rows
+                        cleaned_df = df.dropna(subset=['invoiced', 'quoted'])
+                        if not cleaned_df.empty:
+                            # Offer download of cleaned CSV
+                            csv = cleaned_df.to_csv(index=False)
+                            st.download_button(
+                                label="Download Cleaned CSV (NaN rows removed)",
+                                data=csv,
+                                file_name="cleaned_clients.csv",
+                                mime="text/csv"
+                            )
+                        else:
+                            st.error("No valid rows remain after removing NaN values. Please fix the CSV.")
+                    else:
+                        st.success("All 'invoiced' and 'quoted' values are valid numbers.")
+
+                    # Store the DataFrame in session state (use original or cleaned)
+                    st.session_state['client_data'] = df if invalid_rows.empty else cleaned_df
+                    st.success("File uploaded successfully! Navigate to other pages to visualize the data.")
+                    
+                    # Display the first few rows
+                    st.subheader("Preview of Uploaded Data")
+                    st.dataframe(df.head())
                 except Exception as e:
                     st.error(f"Error converting numeric columns: {e}")
                     return
-
-                # Store the dataframe in session state
-                st.session_state['client_data'] = df
-                st.success("File uploaded successfully! Navigate to other pages to visualize the data.")
-                
-                # Display the first few rows
-                st.subheader("Preview of Uploaded Data")
-                st.dataframe(df.head())
             else:
                 st.error(f"CSV must contain the following columns: {', '.join(expected_columns)}")
         except Exception as e:
