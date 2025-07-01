@@ -26,6 +26,17 @@ def main():
 
             # Validate columns
             if all(col in df.columns for col in expected_columns):
+                # Convert invoiced and quoted to float, handling errors
+                try:
+                    df['invoiced'] = pd.to_numeric(df['invoiced'], errors='coerce')
+                    df['quoted'] = pd.to_numeric(df['quoted'], errors='coerce')
+                    # Check for NaN values after conversion
+                    if df['invoiced'].isna().any() or df['quoted'].isna().any():
+                        st.warning("Some 'invoiced' or 'quoted' values could not be converted to numbers and were set to NaN.")
+                except Exception as e:
+                    st.error(f"Error converting numeric columns: {e}")
+                    return
+
                 # Store the dataframe in session state
                 st.session_state['client_data'] = df
                 st.success("File uploaded successfully! Navigate to other pages to visualize the data.")
