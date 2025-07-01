@@ -20,7 +20,12 @@ def main():
                 'invoiced', 'quoted', 'status', 'products', 'product_line',
                 'contacted', 'contact_name', 'business_name', 'phone_number',
                 'email_address', 'business_address', 'city', 'state',
-                'zip_code', 'social_media_links'
+                'zip_code', 'social_media_links', 'needs', 'wants',
+                'requirements', 'features', 'functionality', 'current problem',
+                'current process', 'current tools', 'current constraints',
+                'current limitations', 'current competitors',
+                'competitors products', 'competitors services',
+                'scope of project work', 'primary contact'
             ]
 
             # Validate columns
@@ -39,7 +44,7 @@ def main():
 
                 # Store the DataFrame in session state
                 st.session_state['client_data'] = df
-                st.success("Data uploaded successfully! Navigate to the Client Details page to view individual client information.")
+                st.success("Data uploaded successfully! Navigate to the Client Details or Notes page to view/edit client information.")
 
                 # Display preview
                 st.subheader("Preview of Uploaded Data")
