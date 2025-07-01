@@ -14,7 +14,7 @@ def main():
 
     df = st.session_state['client_data']
 
-    # Select a client by business name or index
+    # Select a client by business name
     st.subheader("Select a Client")
     client_names = df['business_name'].tolist()
     selected_client = st.selectbox("Choose a client", options=client_names)
@@ -37,7 +37,6 @@ def main():
 
         with col2:
             st.write("**Business Details**")
-            # Safely handle invoiced and quoted
             invoiced = client_data['invoiced']
             quoted = client_data['quoted']
             st.write(f"**Invoiced**: ${invoiced:.2f}" if pd.notna(invoiced) else "**Invoiced**: Not available")
