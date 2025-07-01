@@ -50,14 +50,18 @@ def main():
         for i, field in enumerate(notes_fields):
             # Convert field name to title case and replace underscores with spaces
             field_display = field.replace('_', ' ').title()
-            # Get current value, default to empty string if NaN
-            current_value = client_data[field] if pd.notna(client_data[field]) else ""
+            # Check if field exists in DataFrame, else use empty string
+            current_value = client_data[field] if field in client_data.index and pd.notna(client_data[field]) else ""
             # Assign to alternating columns
             with col1 if i % 2 == 0 else col2:
                 updated_values[field] = st.text_area(f"{field_display}", value=current_value, height=100, key=f"notes_{field}_{client_index}")
 
         # Save button
         if st.button("Save Notes", key=f"save_notes_{client_index}"):
+            # Ensure all notes fields exist in DataFrame
+            for field in notes_fields:
+                if field not in df.columns:
+                    df[field] = pd.NA  # Add missing column with NA values
             # Update the DataFrame with new values
             for field, value in updated_values.items():
                 st.session_state['client_data'].loc[client_index, field] = value
