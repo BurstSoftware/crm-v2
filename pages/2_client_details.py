@@ -37,14 +37,17 @@ def main():
 
         with col2:
             st.write("**Business Details**")
-            st.write(f"**Invoiced**: ${client_data['invoiced']:.2f}")
-            st.write(f"**Quoted**: ${client_data['quoted']:.2f}")
+            # Safely handle invoiced and quoted
+            invoiced = client_data['invoiced']
+            quoted = client_data['quoted']
+            st.write(f"**Invoiced**: ${invoiced:.2f}" if pd.notna(invoiced) else "**Invoiced**: Not available")
+            st.write(f"**Quoted**: ${quoted:.2f}" if pd.notna(quoted) else "**Quoted**: Not available")
             st.write(f"**Status**: {client_data['status']}")
             st.write(f"**Products**: {client_data['products']}")
             st.write(f"**Product Line**: {client_data['product_line']}")
-            st.write(f"**Contacted**: {'Yes' if client_data['contacted'] else 'No'}")
-            st.write(f"**Marketed**: {'Yes' if client_data['marketed'] else 'No'}")
-            st.write(f"**Emailed**: {'Yes' if client_data['emailed'] else 'No'}")
+            st.write(f"**Contacted**: {'Yes' if client_data['contacted'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
+            st.write(f"**Marketed**: {'Yes' if client_data['marketed'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
+            st.write(f"**Emailed**: {'Yes' if client_data['emailed'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
 
 if __name__ == "__main__":
     main()
