@@ -20,33 +20,15 @@ def main():
         st.warning("Duplicate business names found in the data. Please ensure each business name is unique.")
         st.dataframe(duplicate_names[['business_name', 'contact_name', 'email_address']])
 
-    # Select a client by business name with search functionality
+    # Select a client by business name
     st.subheader("Select a Client")
-    # Create a list of display names: "Business Name (Contact Name)"
-    display_names = sorted(
-        [f"{row['business_name']} ({row['contact_name']})" 
-         for _, row in df.drop_duplicates(subset=['business_name']).iterrows()]
-    )
-    # Search input for filtering
-    search_term = st.text_input("Search for a client by business name", key="client_search")
-    # Filter display names based on search term
-    if search_term:
-        filtered_names = [name for name in display_names if search_term.lower() in name.lower()]
-    else:
-        filtered_names = display_names
-    # Ensure there’s at least one option to avoid empty dropdown
-    if not filtered_names:
-        filtered_names = ["No matching clients found"]
-        st.warning("No clients match your search. Showing all clients.")
-        filtered_names = display_names
-    # Dropdown for selection
-    selected_display_name = st.selectbox("Choose a client", options=filtered_names, key="client_select")
-    
-    if selected_display_name and selected_display_name != "No matching clients found":
-        # Extract business_name from the selected display name
-        selected_business_name = selected_display_name.split(" (")[0]
+    # Create a sorted list of unique business names
+    client_names = sorted(df['business_name'].drop_duplicates().tolist())
+    selected_client = st.selectbox("Choose a client by business name", options=client_names, key="client_select")
+
+    if selected_client:
         # Get the selected client's data (first occurrence if duplicates exist)
-        client_data = df[df['business_name'] == selected_business_name].iloc[0]
+        client_data = df[df['business_name'] == selected_client].iloc[0]
 
         st.subheader(f"Details for {client_data['business_name']}")
         col1, col2 = st.columns(2)
