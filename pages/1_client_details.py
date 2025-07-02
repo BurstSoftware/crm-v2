@@ -55,5 +55,23 @@ def main():
             st.write(f"**Product Line**: {client_data['product_line']}")
             st.write(f"**Contacted**: {'Yes' if client_data['contacted'] in [1, '1', 'Yes', 'yes', True] else 'No'}")
 
+        # New section for Notes
+        st.subheader("Client Notes")
+        col1, col2 = st.columns(2)
+        notes_fields = [
+            'needs', 'wants', 'requirements', 'features', 'functionality',
+            'current problem', 'current process', 'current tools',
+            'current constraints', 'current limitations', 'current competitors',
+            'competitors products', 'competitors services', 'scope of project work',
+            'primary contact'
+        ]
+
+        for i, field in enumerate(notes_fields):
+            field_display = field.replace('_', ' ').title()
+            # Handle missing or NaN values
+            value = client_data[field] if field in client_data.index and pd.notna(client_data[field]) else "Not provided"
+            with col1 if i % 2 == 0 else col2:
+                st.write(f"**{field_display}**: {value}")
+
 if __name__ == "__main__":
     main()
